@@ -22,92 +22,82 @@ import static proyectojbdc.Conexion.conectar;
  * @author mbs
  */
 public class VentanaDatos extends javax.swing.JFrame {
+
     DefaultTableModel modelo;
-  
-    String alu [] = new String[3];
+
+    String alu[] = new String[3];
     String alumnoTabla[] = new String[3];
     Alumno alumno = new Alumno();
     String todo = "Select * from Alumno";
-    
+   
+    Statement st;
     Statement obtener;
     ResultSet resultado;
-    
 
     Connection conectar;
+
     public VentanaDatos() {
         initComponents();
     }
-    
-    public void datosAlumno(){
-        
+
+    public void datosAlumno() {
+
         alu[0] = alumno.getDni();
         alu[1] = alumno.getNome();
-        alu[2] = alumno.getApelido();  
+        alu[2] = alumno.getApelido();
         alumnoTabla[0] = texto1.getText();
         alumnoTabla[1] = texto2.getText();
         alumnoTabla[2] = texto3.getText();
     }
-   
-   
-    
-    public void cargarTaboa(){
-        
-         
+
+    public void cargarTaboa() {
+
         alu[0] = alumnoTabla[0];
         alu[1] = alumnoTabla[1];
         alu[2] = alumnoTabla[2];
-        
-       
+
         try {
-          
-  
+
             //preparedStatement para recogiendo el driver de la ruta de la clase Conexión
-            
             PreparedStatement ps = Conexion.conectar.prepareStatement("Insert into Alumno(nombre,apellidos,dni) values(?,?,?)");
-            ps.setString(1,alu[0]);
-            ps.setString(2,alu[1]);
-            ps.setString(3,alu[2]);
+            ps.setString(1, alu[0]);
+            ps.setString(2, alu[1]);
+            ps.setString(3, alu[2]);
             int validar = ps.executeUpdate();
-           if(validar>0){
-               JOptionPane.showMessageDialog(null,"Datos gardados con éxito");
-           }
-           
-            
-        } catch (SQLException ex) {
-             JOptionPane.showMessageDialog(null,"Erro ao gardar os datos");
-        }
-       
-        DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();          
+            DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();
             modelo.addRow(alu);
             tabla1.setModel(modelo);
-        
-        
-        
-    }
-public void mostrarDatos(){
-    
-    
-    
-       try {
-            PreparedStatement ver = Conexion.conectar.prepareStatement(todo);
-           resultado = ver.executeQuery();
-           while(resultado.next()){
-            
-              alu[0] = resultado.getString("nombre");
-              alu[1] = resultado.getString("apellidos");
-              alu[2] = resultado.getString("dni");
-              DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();          
-              modelo.addRow(alu);
-              tabla1.setModel(modelo);
-             
-            
-           }
+            if (validar > 0) {
+                JOptionPane.showMessageDialog(null, "Datos gardados con éxito");
+            }
+
         } catch (SQLException ex) {
-            System.out.println("Error al leer  la BD: "+ex.getMessage());
- 
-    }  
-        
-}
+            JOptionPane.showMessageDialog(null, "Erro ao gardar os datos");
+        }
+
+    }
+
+    public void mostrarDatos() {
+
+        try {
+            PreparedStatement ver = Conexion.conectar.prepareStatement(todo);
+            resultado = ver.executeQuery();
+            while (resultado.next()) {
+
+                alu[0] = resultado.getString("nombre");
+                alu[1] = resultado.getString("apellidos");
+                alu[2] = resultado.getString("dni");
+                DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();
+                modelo.addRow(alu);
+                tabla1.setModel(modelo);
+
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al leer  la BD: " + ex.getMessage());
+
+        }
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -273,7 +263,7 @@ public void mostrarDatos(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void botonEngadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEngadirActionPerformed
-       
+
         this.datosAlumno();
         this.cargarTaboa();
     }//GEN-LAST:event_botonEngadirActionPerformed
@@ -283,71 +273,71 @@ public void mostrarDatos(){
     }//GEN-LAST:event_texto1ActionPerformed
 
     private void botonAmosarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAmosarActionPerformed
-     mostrarDatos();
+        mostrarDatos();
     }//GEN-LAST:event_botonAmosarActionPerformed
 
     private void botonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBorrarActionPerformed
-     
-  
-      
-        try{ 
-             int fila = tabla1.getSelectedRow();
-           Statement  st = Conexion.conectar.createStatement();
-            String borrar = "delete from Alumno where dni ="+tabla1.getValueAt(fila,2);
-          
-            
-           int n = st.executeUpdate(borrar);
-          
-            if(n>0){
-                
-                
-               mostrarDatos();
-               
-                JOptionPane.showConfirmDialog(null,"¿Desexa borra-lo Alumno?");
-                JOptionPane.showMessageDialog(null,"Alumno borrado con éxito ");
+
+        try {
+            int fila = tabla1.getSelectedRow();
+             st = Conexion.conectar.createStatement();
+            String borrar = "delete from Alumno where dni =" + tabla1.getValueAt(fila, 2);
+
+            int n = st.executeUpdate(borrar);
+
+            if (n > 0) {
+
+                mostrarDatos();
+
+                JOptionPane.showConfirmDialog(null, "¿Desexa borra-lo Alumno?");
+                JOptionPane.showMessageDialog(null, "Alumno borrado con éxito ");
             }
-            
-           
+
         } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null,"Erro ao borra-los datos"+ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao borra-los datos" + ex.getMessage());
         }
-        
-        
+
+
     }//GEN-LAST:event_botonBorrarActionPerformed
 
     private void botonLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonLimparActionPerformed
-       texto1.setText("");
-       texto2.setText("");
-       texto3.setText("");
-  
-    }//GEN-LAST:event_botonLimparActionPerformed
+        texto1.setText("");
+        texto2.setText("");
+        texto3.setText("");
 
+    }//GEN-LAST:event_botonLimparActionPerformed
+/**
+ * Amosa nos campos de texto cando clicamos na cela da taboa
+ * @param evt 
+ */
     private void tabla1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla1MouseClicked
-//    if(evt.getButton()==1){
-//       int fila = tabla1.getSelectedRow();
-//        try {
-//            
-//        
-//            String porID = "Select * from Alumno where dni ="+tabla1.getValueAt(fila,0);
-//            
-//            
-//           Statement st = Conexion.conectar.createStatement();
-//           ResultSet rs =  st.executeQuery(porID);
-//        
-//            rs.next();
-//            texto1.setText(rs.getString("nombre"));
-//            texto2.setText(rs.getString("apellidos"));
-//            texto3.setText(rs.getString("dni"));
-//            
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(VentanaDatos.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//    }
+    if(evt.getButton()==1){
+      
+        try {
+              int fila = tabla1.getSelectedRow();
+             st = Conexion.conectar.createStatement();
+           
+        
+            String porID = "Select * from Alumno where dni ="+tabla1.getValueAt(fila,2);
+              ResultSet rs =  st.executeQuery(porID);
+            
+         rs.next();
+            texto1.setText(rs.getString("nombre"));
+            texto2.setText(rs.getString("apellidos"));
+            texto3.setText(rs.getString("dni"));
+         
+        
+            
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(VentanaDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     }//GEN-LAST:event_tabla1MouseClicked
 
-  /**
+    /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
