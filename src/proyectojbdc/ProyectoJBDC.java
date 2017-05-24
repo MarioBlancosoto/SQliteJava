@@ -7,12 +7,16 @@ public class ProyectoJBDC {
   
     public static void main(String[] args) {
       Conexion con = new Conexion();
-      //con.cargarArray();
-      con.drivers();
+
+      
       con.conectar();
-     // con.insertarAlumno();
-      con.visualizarAlmuno();
-      con.borrarAlumno();
+   
+    // con.visualizarAlmuno();
+     //con.borrarAlumno();
+     VentanaDatos ventana = new VentanaDatos();
+     ventana.setVisible(true);
+     
+     
     }
     
 }
