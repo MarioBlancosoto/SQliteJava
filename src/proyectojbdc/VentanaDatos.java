@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package proyectojbdc;
 
 import java.sql.Connection;
@@ -10,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -24,16 +19,12 @@ import static proyectojbdc.Conexion.conectar;
 public class VentanaDatos extends javax.swing.JFrame {
 
     DefaultTableModel modelo;
-
-    String alu[] = new String[3];
-    String alumnoTabla[] = new String[3];
     Alumno alumno = new Alumno();
+    String alu[] = new String[3];
+    String alumnoTabla[] = new String[3];  
     String todo = "Select * from Alumno";
-   
     Statement st;
-    Statement obtener;
     ResultSet resultado;
-
     Connection conectar;
 
     public VentanaDatos() {
@@ -280,7 +271,7 @@ public class VentanaDatos extends javax.swing.JFrame {
 
         try {
             int fila = tabla1.getSelectedRow();
-             st = Conexion.conectar.createStatement();
+            st = Conexion.conectar.createStatement();
             String borrar = "delete from Alumno where dni =" + tabla1.getValueAt(fila, 2);
 
             int n = st.executeUpdate(borrar);
@@ -306,35 +297,31 @@ public class VentanaDatos extends javax.swing.JFrame {
         texto3.setText("");
 
     }//GEN-LAST:event_botonLimparActionPerformed
-/**
- * Amosa nos campos de texto cando clicamos na cela da taboa
- * @param evt 
- */
+    /**
+     * Amosa nos campos de texto cando clicamos na cela da taboa
+     *
+     * @param evt
+     */
     private void tabla1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla1MouseClicked
-    if(evt.getButton()==1){
-      
-        try {
-              int fila = tabla1.getSelectedRow();
-             st = Conexion.conectar.createStatement();
-           
-        
-            String porID = "Select * from Alumno where dni ="+tabla1.getValueAt(fila,2);
-              ResultSet rs =  st.executeQuery(porID);
-            
-         rs.next();
-            texto1.setText(rs.getString("nombre"));
-            texto2.setText(rs.getString("apellidos"));
-            texto3.setText(rs.getString("dni"));
-         
-        
-            
-            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(VentanaDatos.class.getName()).log(Level.SEVERE, null, ex);
+        if (evt.getButton() == 1) {
+
+            try {
+                int fila = tabla1.getSelectedRow();
+                st = Conexion.conectar.createStatement();
+
+                String porID = "Select * from Alumno where dni =" + tabla1.getValueAt(fila, 2);
+                ResultSet rs = st.executeQuery(porID);
+
+                rs.next();
+                texto1.setText(rs.getString("nombre"));
+                texto2.setText(rs.getString("apellidos"));
+                texto3.setText(rs.getString("dni"));
+
+            } catch (SQLException ex) {
+                Logger.getLogger(VentanaDatos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        
-    }
     }//GEN-LAST:event_tabla1MouseClicked
 
     /**
