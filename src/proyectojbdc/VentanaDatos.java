@@ -23,12 +23,18 @@ public class VentanaDatos extends javax.swing.JFrame {
     String alu[] = new String[3];
     String alumnoTabla[] = new String[3];  
     String todo = "Select * from Alumno";
+    
     Statement st;
     ResultSet resultado;
     Connection conectar;
 
     public VentanaDatos() {
+        
         initComponents();
+        modelo = (DefaultTableModel) tabla1.getModel();
+        mostrarDatos();
+        
+        
     }
 
     public void datosAlumno() {
@@ -55,7 +61,7 @@ public class VentanaDatos extends javax.swing.JFrame {
             ps.setString(2, alu[1]);
             ps.setString(3, alu[2]);
             int validar = ps.executeUpdate();
-            DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();
+            
             modelo.addRow(alu);
             tabla1.setModel(modelo);
             if (validar > 0) {
@@ -73,14 +79,17 @@ public class VentanaDatos extends javax.swing.JFrame {
         try {
             PreparedStatement ver = Conexion.conectar.prepareStatement(todo);
             resultado = ver.executeQuery();
+            
             while (resultado.next()) {
 
                 alu[0] = resultado.getString("nombre");
                 alu[1] = resultado.getString("apellidos");
                 alu[2] = resultado.getString("dni");
+               
                 DefaultTableModel modelo = (DefaultTableModel) tabla1.getModel();
                 modelo.addRow(alu);
                 tabla1.setModel(modelo);
+               
 
             }
         } catch (SQLException ex) {
@@ -112,6 +121,7 @@ public class VentanaDatos extends javax.swing.JFrame {
         botonBorrar = new javax.swing.JButton();
         botonAmosar = new javax.swing.JButton();
         botonLimpar = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -178,6 +188,13 @@ public class VentanaDatos extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("modificar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -200,12 +217,17 @@ public class VentanaDatos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
-                        .addComponent(botonBorrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(botonAmosar)
-                        .addGap(43, 43, 43)
-                        .addComponent(botonLimpar)
-                        .addGap(32, 32, 32)))
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(botonBorrar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(botonAmosar)
+                                .addGap(43, 43, 43)
+                                .addComponent(botonLimpar)
+                                .addGap(32, 32, 32)))))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -226,6 +248,8 @@ public class VentanaDatos extends javax.swing.JFrame {
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(etiqueta3)
                             .addComponent(texto3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(botonAmosar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,7 +290,23 @@ public class VentanaDatos extends javax.swing.JFrame {
     private void botonAmosarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAmosarActionPerformed
         mostrarDatos();
     }//GEN-LAST:event_botonAmosarActionPerformed
-
+public void modificar(){
+     String modificar = " UPDATE Alumno SET "+tabla1.getColumnName(0)+"='"+texto1.getText()+"',"+tabla1.getColumnName(1)+"='"+texto2.getText()+"',"+tabla1.getColumnName(2)+"='"+texto3.getText()+"'";
+       System.out.println(""+modificar);
+     try {
+            st = Conexion.conectar.createStatement();
+            
+            st.executeUpdate(modificar);    
+            modelo.setValueAt(texto1.getText(),tabla1.getSelectedRow(),0);
+            modelo.setValueAt(texto2.getText(),tabla1.getSelectedRow(),1);
+            modelo.setValueAt(texto3.getText(),tabla1.getSelectedRow(),2);
+        } catch (SQLException ex) {
+            Logger.getLogger(VentanaDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           
+    
+    
+}
     private void botonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBorrarActionPerformed
 
         try {
@@ -277,11 +317,13 @@ public class VentanaDatos extends javax.swing.JFrame {
             int n = st.executeUpdate(borrar);
 
             if (n > 0) {
-
-                mostrarDatos();
+       
+               // mostrarDatos();
 
                 JOptionPane.showConfirmDialog(null, "¿Desexa borra-lo Alumno?");
+                modelo.removeRow(fila);
                 JOptionPane.showMessageDialog(null, "Alumno borrado con éxito ");
+              Conexion.conectar.close();
             }
 
         } catch (SQLException ex) {
@@ -308,6 +350,7 @@ public class VentanaDatos extends javax.swing.JFrame {
             try {
                 int fila = tabla1.getSelectedRow();
                 st = Conexion.conectar.createStatement();
+              
 
                 String porID = "Select * from Alumno where dni =" + tabla1.getValueAt(fila, 2);
                 ResultSet rs = st.executeQuery(porID);
@@ -323,6 +366,12 @@ public class VentanaDatos extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_tabla1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      
+        modificar();
+        modelo = (DefaultTableModel) tabla1.getModel();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -367,6 +416,7 @@ public class VentanaDatos extends javax.swing.JFrame {
     private javax.swing.JLabel etiqueta2;
     private javax.swing.JLabel etiqueta3;
     private javax.swing.JLabel etiquetaN;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panel1;
     private javax.swing.JTable tabla1;
