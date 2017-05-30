@@ -275,7 +275,7 @@ public class VentanaDatos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_texto1ActionPerformed
 public void modificar(){
-     String modificar = " UPDATE Alumno SET "+tabla1.getColumnName(0)+"='"+texto1.getText()+"',"+tabla1.getColumnName(1)+"='"+texto2.getText()+"',"+tabla1.getColumnName(2)+"='"+texto3.getText()+"'";
+     String modificar = " UPDATE Alumno SET "+tabla1.getColumnName(0)+"='"+texto1.getText()+"',"+tabla1.getColumnName(1)+"='"+texto2.getText()+"' where "+tabla1.getColumnName(2)+" ='"+texto3.getText()+"'";
        System.out.println(""+modificar);
      try {
             st = Conexion.conectar.createStatement();
